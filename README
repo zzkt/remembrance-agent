@@ -1,17 +1,16 @@
-Remembrance Agent, version 2.12
+## Remembrance Agent, version 2.12
 
 Copyright (C) 1996-2003 Massachusetts Institute of Technology and Bradley Rhodes
 Released under the GNU General Public License (GPL)
 
-----------------
 Thank you for using the RA.  If you have questions or comments, please send
 mail to ra-bugs@remem.org (or ra-maintainer@remem.org).  If you
 would like to be added to an announcement mailing list for new versions
 (VERY low traffic) send mail to ra-announce-request@remem.org.
 
 
-Contents
---------
+### Contents
+
 0.  Introduction
 1.  Building the Remembrance Agent
 2.  Creating a database from a collection of text
@@ -21,8 +20,7 @@ Contents
 7.  What's New?
 8.  License information
 
-0.  Introduction
-----------------
+### 0.  Introduction
 
 The Remembrance Agent is one of the projects being developed by the MIT
 Media Lab's software agents group.  Given a collection of the user's
@@ -52,8 +50,7 @@ http://www.remem.org/
 
 Thanks for using the Remembrance Agent, and I hope you find it useful.
 
-1.  Building the Remembrance Agent
-----------------------------------
+### 1.  Building the Remembrance Agent
 
 The RA back-end has two executables, "ra-index" and "ra-retrieve", which
 together make the system called Savant.  Since you are reading this file, I
@@ -79,8 +76,8 @@ of your main directory and put them there.  You can then delete the source
 files if you like.
 
 
-2.  Creating a database from a collection of text
--------------------------------------------------
+### 2.  Creating a database from a collection of text
+
 Savant has two executables, one which indexes documents into databases, and
 one which performs interactive retrievals from these databases.  To index,
 you must have a set of source text-files, and a directory Savant can put
@@ -120,8 +117,8 @@ after creating a database using index.  You can use ra-retrieve as a simple
 search engine, but usually ra-retrieve is only called by the emacs
 front-end.
 
-3.  Using the Remembrance Agent in Emacs
-----------------------------------------
+### 3.  Using the Remembrance Agent in Emacs
+
 You can load the Remembrance Agent automatically every time you run emacs
 by adding this line to your .emacs file in your homedir:
 
@@ -205,8 +202,7 @@ minimum threshold will print with a "-" sign, otherwise they'll show up as
 The keywords are the top five keywords that contributed to making this
 suggestion, in order.
 
-4.  Commands (using the RA)
----------------------------
+### 4.  Commands (using the RA)
 
 C-c r t (Control-c r t): Toggle Remem
    Toggle the remembrance agent on and off.  You can also do this by
@@ -274,8 +270,7 @@ Resize window: Resize
    as performing a remem-toggle).
 
 
-5.  Logging
------------
+### 5.  Logging
 
 Because this is a research project, the emacs front-end logs generic data
 such as how often queries are generated, how many suggestions are followed,
@@ -306,8 +301,7 @@ Here's the complete list of information that gets logged:
 No information about the content of documents or suggestions is kept.
 
 
-6.  Savant's document template system and other customizations
--------------------------------------------------------------- 
+### 6.  Savant's document template system and other customizations
 
 As of Savant v.2.00, the template structure is compiled instead of set in a
 file.  It is much more powerful than previous versions and allows for
@@ -317,8 +311,8 @@ This still has to be documented.  It's pretty cool though :).  Feel free to
 check the comments in the source-code -- they're pretty good.  All the
 template stuff happens in RA/templates/conftemplates.c.
 
-7.  What's New?
----------------
+### 7.  What's New?
+
 This is release v2.0, which is a huge rewrite.  Here are some changes:
      Back-end (Savant):
           Redesigned from the ground up and is much cleaner now. 
@@ -339,8 +333,7 @@ This is release v2.0, which is a huge rewrite.  Here are some changes:
 See savant.h for a full changelog (yes, I really should break that out into
 a "changelog" file).
 
-8.  License
------------
+### 8.  License
 
 Some files and libraries in this distribution carry their own copyright
 (notably the parsedate and zlib directories and libraries in savutil).  In
