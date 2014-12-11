@@ -1,0 +1,146 @@
+ChangeLog for remem:
+2.12 - 09/21/01 - Made a few changes so Savant will compile on OS-X. First, removed the include of malloc.h
+	          in dateyacc.c, since OS-X has trouble finding it and we don't seem to need it anyway.
+		  Second, added /sw/include to configure.in and /sw/lib to main/Makefile.am so OS-X can
+		  find the PCRE libraries when they were installed using Fink. At least the Makefile change
+		  should be moved into configure.in before releasing. Also, I ran the following command:
+		  "cd remem-2.12; automake --add-missing -c; autoreconf" to update the "missing" script to
+		  a later version. Not yet sure if I want to include the missing files myself or just
+		  include that command in the installation directions.
+2.11 - 08/06/01 - Changed parse-text so it indexes words with more than one punctuation mark after them
+                  (e.g. "doh!!!" or "really?!?" or "hmm..."). Removed pcre from the source distribution.
+                  I was including 1.09 and it's up to 3.4 now, plus the library is often included in
+                  other distributions (e.g. kdesupport). This distribution should include documentation
+                  saying where to get the pcre libraries, and include pointers to RPMS. Updated the 
+                  email_body_filter_regexps filter to only look at the first 100 lines of a header. This 
+                  sanity check keeps pcre from blowing up if, say, you're given an email body with 
+                  thousands of lines of code all indented so it thinks it's all one header. Moved 
+                  this text to ChangeLog and out of savant.h. Updated the man pages. Removed the code
+		  in rmain.c that changed relative pathnames to absolute pathnames, 'cause it upsets
+		  Windows (and doesn't seem necessary for Unix).
+2.10 - 04/26/01 - changed delimiter of RMAIL from "^_^L" to "(^|\n)^_^L" to fix a potential parse
+                  error (it's just more correct, mainly). Also redid parsedoc.c's find_next_doc to
+                  not re-search the entire file for a delimiter after it's not found in the first pass
+                  (should speed up indexing a little for long documents, e.g. ones with attachments). It
+                  also includes a fix for an off-by-one error that made find_next_doc occationally produce
+                  one-character-long documents. In remem.el, Fixed clobbering of C-xo bug that I introduced 
+                  in 2.09, plus fixed remem-query-extra-string-previous bug (should be 
+                  remem-query-extra-text-string-previous)
+2.09 - 01/18/01 - Moved HTML template to before Unix Mail. Unix Mail is just too easy to get
+                  a false positive. Added a different Jimminy-query-mode template for the
+                  new jimminy. Made it so setting biases doesn't print in non-verbose mode.
+                  Added vm-mode to the emacs rmail query mode stuff.
+                  Got rid of values.h from dateyacc.c, which was upsetting BSD.
+2.08 - 02/18/00 - Included Webra template, logging of doc & query types in remem.el, plus a new
+                  normalization based on query length (now normalize by number of unique words,
+                  not number of words total). The former tended to penalize longer queries.
+                  This is still a tricky issue, but this one at least seems a little bit fairer.
+                  Also fixed (I hope) the unix mail to include the first message of the archive.
+                  Remem.el now defaults to printing hash marks for how relevant a hit is, rather 
+                  than the numbers. Also can set it to not show hits below a certain threshold.
+                  Also added the remem-mode-db-alist change database based on major mode.
+2.07 - 09/23/99 - Included official signature-line filter ("\n-- \n"), Added "follow symbolic links" option.
+                  More remem.el work, including looking at "RMAIL" buffer when in "RMAIL-summary" buffer, and
+                  same for VM.
+2.06 - 09/02/99 - load doc template info all at the beginning to avoid multiple disk
+                  seeks while filling the cache.  Saves a lot of time when going
+                  over NFS (though we're still about twice as slow as from local disk)
+                  Lots of remem.el work.
+2.05 - 07/19/99 - Added output of template type, output of filename
+2.04 - 06/16/99 - Changed all_sims and total_sims to use a hash table instead of an array.
+                  This saves buckos of memory in ra-retrieve (like it's probably less than 
+                  half now on average).  Also added C-cf, the field query.
+2.03 - 05/25/99 - Added some sanity checks to remem.el so it gives clear error messages when
+                  the config is wrong.  Also added a sanity check so if a single document goes 
+                  more than 100K we assume we goofed and truncate (don't index) the rest of the
+                  file.
+2.02 - 04/12/99 - Added logging to remem.el, added man pages for ra-index and ra-retrieve, 
+                  and got rid of having a period on a line by itself delimit a query, since
+                  that can be a part of a query.  (Now you have to use ^D).
+                  Also now works on the Alpha (64-bit clean), and fixed a few other minor bugs.
+2.01 - 02/10/99 - Mainly changes to remem.el -- a few minor bug fixes, plus lots of changes
+                  to have it work for XEmacs.  Also got rid of (require 'jimminy), which was
+                  neither released with this version nor used by it.
+2.00 - 02/26/99 - Release 2.0, which is a major rewrite of almost all aspects of the code.
+                  Includes generalized templates using perl regular expressions, generalized
+                  addition of new field-types, and function pointers for new data types so you
+                  can add new distance metrics (e.g. for GPS coordinates), with potential for 
+                  code reuse.  The text retrieval now uses the Okapi TF/iDF algorithm from City
+                  University, and has a completely different database format that is about 40% 
+                  the size of the old system.  The emacs front-end is also rewritten, with mouse
+                  support and more customization.  It also sends major-mode information to Savant,
+                  so the back-end can be more clever about parsing a query (e.g. by pulling out
+                  the from-line in email being written).
+1.44 - 09/02/98 - Added filename to the subject title line in full query
+1.43r- 04/17/98 - Fixed up some header stuff left over from the yenta merge, and a bug where
+                  decode_char didn't handle numbers correctly.
+                  (Note: the "r" is rhodes -- merge this comment with the other 1.43 branches 
+                  when checking in, and remember to update the VERSION, above).
+     - 06/20/98 - Added keywords to the full query, event added better error handling, and malex
+                  changed the indexer to process and index in a single step instead of two batch jobs.
+                  (Version number changes are less often now that we're using CVS.)
+1.42 - 04/03/98 - fullquery now includes a breakdown of how much a field contributes to the
+                  similarity as a whole.
+1.41 - 04/02/98 - Fixed make_nice_date so won't coredump on Euro-format dates (mm/dd/yy)
+1.40 - 03/29/98 - Adds the "fullquery" commmand, which gives lots of information 
+                  as a query result, instead of just the nicely formatted, human 
+                  readable stuff.  Also fixed ra-index so not having a "-v" still 
+                  works. Finally, the template system now only recognizes a file 
+                  as a certain type if the "recognize" field appears in the 
+                  first 500 characters (#define'ed in template.h).  This
+                  keeps ra-index from thinking a text file is plain email,
+                  just because it has "From " at the start of a line somewhere.
+1.39r- 03/19/98 - Fixed lots of problems with date & time indexing and lookup
+1.38 - 03/16/98 - Re-fixed a problem with retrieval, an array bounds overread
+                  in wordvec/readwv_ra.c.  
+1.37 - 03/13/98 - Cleaned up build system again.
+1.36 - 03/13/98 - Completely reconciled versions of index, retrieve and merge.
+                  This actually fixes some weird memory corruption bugs carried 
+		     over from 1.34 as well.
+1.35 - 02/19/98 - A semi-broken interim version; after the big merge stemming
+                  from v. 1.34, we had to go through and fix all the 
+		     brokenness and inconsistency.  The biggest problem was
+		     in wordvec, which had to be custom-modified to satisfy 
+		     some needs of Yenta.  Much of the directory structure was
+		     also rearranged.  v. 1.35 features a mostly bug-free indexer
+		     and a mostly broken retriever.  The code was frozen at this
+		     point to allow people to play with the indexer.
+1.34 - 01/??/98 - Fixed merge_dvmags() so that auto-split-and-merge actually 
+                  works correctly;  also uncommented code to remove temp subdirs.
+                  For the record, this is the version from which the RA-Yenta 
+                  merge was propagated.
+1.33	- 01/21/98 - Separated merge.c into mmain.c and merge.c, patched merge.c 
+                  routines into index.c to effect automatic split-and-merge
+1.32 - 01/20/98 - Standardized types in database (DB_INT, etc.);
+                  Replaced calls to fwrite/fread with fwrite_big/fread_big,
+		     so that databases are in big-endian byte order;
+		     Fixed many warnings, a few memory leaks.
+		     Incorporated rhodes' div-by-0 bug fix in readwv.c
+		     Added -d command line option
+1.31 - 01/15/98 - Made to work with GNU autoconf, courtesy of amu
+1.30 - 01/13/98 - Code base for anticipated 2.0 release
+                  Includes new parsedate package, addition of "delimiter" field
+		     to templates, all the new field-type tags added for ISWC/DL,
+		     etc...
+1.25 - 06/06/97 - Intermediate version; a merge of 1.22 and 1.23.
+       12/29/97 - Uses TFiDF instead of just term frequency.
+1.23 - 06/04/97 - Not actually a descendent of 1.22 but a sibling; never released.
+                  Several small bugfixes - memory leaks, array bounds violations,
+                  etc.  Fixed a some serious bugs in splitting documents by 
+		     template and in the use of window maps during retrieval.
+		     Also added new "index_dotfiles" config variable and added new 
+		     "Reject" keyword to templates.  Also contains many preparations
+		     for the grafting-on of a latent-semantic indexing module to 
+		     replace wordvec.
+1.22 - 06/03/97 - Memory leak in writing database fixed, for a significant
+                  speedup.  Brad added new "location" field to templates, as
+		     well as modifying the indexing to make use of fields other
+		     than "body" and "title" and modifying retrieval with options
+		     for different normalization schemes
+1.2  - 03/16/97 - Separated savant into index and retrieve; widespread
+                  modularization of internals; new eigentext work begun
+1.1  - 10/26/96 - Fixed two bugs: in common.c, fixed by_alpha() to actually
+                  sort strings correctly, as opposed to randomly mixing 
+		     them up, and in inter.c, fixed update_matches() to not
+		     try to read index -1 of matches.
+1.0 - 07/29/96 - First "mostly stable" public release 

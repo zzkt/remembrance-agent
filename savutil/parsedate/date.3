@@ -1,0 +1,198 @@
+
+
+
+     DDDDAAAATTTTEEEE((((3333))))                       ((((UUUUCCCCLLLLAAAA))))                      DDDDAAAATTTTEEEE((((3333))))
+
+
+
+     NNNNAAAAMMMMEEEE
+          parsedate - interpret character strings representing dates
+
+     SSSSYYYYNNNNOOOOPPPPSSSSIIIISSSS
+          #include "parsedate.h"
+
+          char date;
+          struct parsedate *pd;
+
+          pd = parsedate (date);
+
+          compute_unixtime (pd);
+
+          break_down_unixtime (pd);
+
+          date = mail_date_string (pd);
+
+          date = uucp_date_string (pd);
+
+     DDDDEEEESSSSCCCCRRRRIIIIPPPPTTTTIIIIOOOONNNN
+          These routines manipulate character strings representing
+          dates.  _p_a_r_s_e_d_a_t_e returns a pointer to a structure of the
+          following form (described in the include-file _p_a_r_s_e_d_a_t_e._h):
+
+          struct parsedate {
+               long unixtime;      /* as returned by time(2) */
+               char *error;        /* non-NULL = error */
+               int year;           /* year (1600 on) */
+               int month;          /* month (1-12) */
+               int day;            /* day of month (1-31) */
+               int hour;           /* hour (0-23) */
+               int minute;         /* minute (0-59) */
+               int second;         /* second (0-59) */
+               int zone;           /* time zone offset */
+               int dst;            /* daylight savings time */
+               int weekday;        /* real day of week */
+               int c_weekday;      /* claimed day of week */
+          };
+
+          Any field containing the value -1 (except for _e_r_r_o_r)
+          indicates information which was either not supplied or was
+          invalid.
+
+          _u_n_i_x_t_i_m_e is the UNIX internal representation of the date
+          (i.e., number of seconds since 1970).  _e_r_r_o_r is NNNNUUUULLLLLLLL if the
+          date string did not contain a syntax error; otherwise, it
+          points to the position in the date string where a syntax
+          error was discovered.  _z_o_n_e indicates the time-zone offset
+          in minutes from UTC.  A positive value denotes a time zone
+          east of Greenwich; a negative value denotes a zone west of
+          Greenwich.  _d_s_t is equal to 1 if the indicated time zone
+          denotes ``daylight savings time'', or 0 if daylight savings
+
+
+
+     Hewlett-Packard               - 1 -             (printed 3/14/85)
+
+
+
+
+
+
+     DDDDAAAATTTTEEEE((((3333))))                       ((((UUUUCCCCLLLLAAAA))))                      DDDDAAAATTTTEEEE((((3333))))
+
+
+
+          time is not indicated.
+
+          _w_e_e_k_d_a_y and _c__w_e_e_k_d_a_y indicate a day of the week via a value
+          in the range 0-6 (0 = Sunday, 6 = Saturday).  _c__w_e_e_k_d_a_y
+          shows which day of the week was actually specified in the
+          date string; _w_e_e_k_d_a_y is derived from _y_e_a_r, _m_o_n_t_h, and _d_a_y
+          via a perpetual-calendar algorithm.
+
+          _c_o_m_p_u_t_e__u_n_i_x_t_i_m_e takes a _s_t_r_u_c_t _p_a_r_s_e_d_a_t_e in which the _y_e_a_r,
+          _m_o_n_t_h, _d_a_y, _h_o_u_r, _m_i_n_u_t_e, _s_e_c_o_n_d, and _z_o_n_e fields have been
+          filled in, and fills in the _u_n_i_x_t_i_m_e and _w_e_e_k_d_a_y fields as
+          appropriate.
+
+          _b_r_e_a_k__d_o_w_n__u_n_i_x_t_i_m_e takes a _s_t_r_u_c_t _p_a_r_s_e_d_a_t_e in which the
+          _u_n_i_x_t_i_m_e and _z_o_n_e fields have been filled in, and fills in
+          the _y_e_a_r, _m_o_n_t_h, _d_a_y, _h_o_u_r, _m_i_n_u_t_e, _s_e_c_o_n_d, and _w_e_e_k_d_a_y
+          fields as appropriate.
+
+          _m_a_i_l__d_a_t_e__s_t_r_i_n_g returns a pointer to a RFC822 (ARPANET mail
+          standard) format character string corresponding to a _s_t_r_u_c_t
+          _p_a_r_s_e_d_a_t_e.  Similarly, _u_u_c_p__d_a_t_e__s_t_r_i_n_g returns a pointer to
+          a UUCP-mail format character string corresponding to a
+          _s_t_r_u_c_t _p_a_r_s_e_d_a_t_e.  In each case, the _y_e_a_r, _m_o_n_t_h, _d_a_y, _h_o_u_r,
+          _m_i_n_u_t_e, _s_e_c_o_n_d, and _z_o_n_e fields should be set first.  If
+          only the _u_n_i_x_t_i_m_e and _z_o_n_e values are initially avaiable,
+          then _b_r_e_a_k__d_o_w_n__u_n_i_x_t_i_m_e should be called before trying to
+          generate a date string.
+
+     DDDDIIIIAAAAGGGGNNNNOOOOSSSSTTTTIIIICCCCSSSS
+          If the character string supplied as an argument to _p_a_r_s_e_d_a_t_e
+          contains a syntax error, the _e_r_r_o_r variables in the returned
+          _s_t_r_u_c_t _p_a_r_s_e_d_a_t_e will be set to point to the place in the
+          argument string where the error was discovered.
+
+          Any field which is either unspecified or given an invalid
+          value in a call to _p_a_r_s_e_d_a_t_e is set to -1.  _c_o_m_p_u_t_e__u_n_i_x_t_i_m_e
+          and _b_r_e_a_k__d_o_w_n__u_n_i_x_t_i_m_e also set the appropriate fields to
+          -1 if they are unable to compute the requested values.
+
+          _m_a_i_l__d_a_t_e__s_t_r_i_n_g and _u_u_c_p__d_a_t_e__s_t_r_i_n_g return NNNNUUUULLLLLLLL if the
+          information required to generate the date string is missing
+          or invalid.
+
+     BBBBUUUUGGGGSSSS
+          The returned value from a call to _p_a_r_s_e_d_a_t_e,
+          _m_a_i_l__d_a_t_e__s_t_r_i_n_g, or _u_u_c_p__d_a_t_e__s_t_r_i_n_g points to a static
+          area whose contents will be overwritten by the next call to
+          the same routine.
+
+          A time-zone offset of ``-0001'' (i.e., one minute west of
+          Greenwich) results in a _z_o_n_e value of -1, and is thus
+          indistinguishable from an invalid or missing time zone.
+
+
+
+     Hewlett-Packard               - 2 -             (printed 3/14/85)
+
+
+
+
+
+
+     DDDDAAAATTTTEEEE((((3333))))                       ((((UUUUCCCCLLLLAAAA))))                      DDDDAAAATTTTEEEE((((3333))))
+
+
+
+          Since this particular time-zone offset is not (and almost
+          certainly never will be) used anywhere in the world, the
+          fact that it cannot be distinguished from an invalid or
+          missing value is probably unimportant.
+
+     AAAAUUUUTTTTHHHHOOOORRRR
+          Richard B. Wales
+          UCLA Center for Experimental Computer Science
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+     Hewlett-Packard               - 3 -             (printed 3/14/85)
+
+
+

@@ -1,0 +1,149 @@
+.TH RA-INDEX 1 "REMEMBRANCE AGENT" "MIT Media Lab"
+.SH NAME
+ra-index - index files for use with remembrance agent software
+.SH SYNOPSIS
+.B ra-index
+[--version] [-v] [-d] [-s] \<base-dir\> \<source1\> [\<source2\>] [\.\.\.]
+[-e \<excludee1\> [\<excludee2\>] [\.\.\.]]
+.SH DESCRIPTION
+.B ra-index 
+and 
+.B ra-retrieve 
+make up the Savant search engine, an information retrieval engine designed
+as a back-end for the Remembrance Agent (RA).  Given a collection of the
+user's accumulated email, usenet news articles, papers, saved HTML files
+and other text notes, the RA attempts to find those documents which are
+most relevant to the user's current context.  That is, it searches this
+collection of text for the documents which bear the highest word-for-word
+similarity to the text the user is currently editing, in the hope that they
+will also bear high conceptual similarity and thus be useful to the user's
+current work.  With the Emacs front-end, these suggestions are continuously
+displayed in a small buffer at the bottom of the user's window.  If a
+suggestion looks useful, the full text can be retrieved with a single
+command.  
+
+The Remembrance Agent works in two stages.  First, the user's collection of
+text documents is indexed into a database saved in a vector format.  After
+the database is created, the other stage of the Remembrance Agent is run
+from emacs, where it periodically takes a sample of text from the working
+buffer and finds those documents from the collection that are most similar.
+It summarizes the top documents in a small emacs window and allows you to
+retrieve the entire text of any one with a keystroke.  See the README file
+for information on using the Emacs front-end.
+
+
+.PP
+At its core Savant is a text-retrieval search-engine that uses a standard
+TF/iDF algorithm, but it also uses a template system to recognize different
+kinds of documents and extract various field information.  For example,
+.B ra-index 
+can recognize subject lines and address information from email files and
+file this information separately.  It can also pull apart file archives
+into separate documents, e.g. RMAIL files are indexed as separate email
+documents.  Finally, there are filters defined for many document types to
+remove extraneous information like HTML tags that might otherwise cause
+problems in retrieval.  These are all precompiled in a template structure.
+It is not currently well documented, though if anyone wants to play with
+it is all defined in the source file templates/conftemplates.c.
+
+The RA is primarily designed as a proactive information provider that
+continually gives you information that might be relevant to your current
+environment, but Savant can also be used as a standard text and information
+retrieval search engine.
+
+.SS USAGE
+To index, you must have a set of source text-files, and a directory Savant
+can put database files into.  The <source> arguments may be files or
+directories.  If a directory is in the list, Savant will use all its
+contents, recursing into all subdirectories.  Non-text files and backup
+files (those appended with ~ or prepended with #) are ignored.  It also
+ignores dot-files (those starting with .) and symbolic links.  Any files or
+directories specified after the optional -e flag will be excluded.  Savant
+will use any files it finds to create a database in the specified base
+directory, which must already exist.  The optional -v argument (verbose)
+will direct Savant to keep you updated on its progress.  So for example,
+.PP
+.RS 0.5i
+.PD 0
+ra-index -v ~/RA-indexes/mail ~/RMAIL ~/Rmail-files -e ~/Rmail-files/Old-files
+.PP
+.PD 1
+.PP
+.RE
+will build a database in the ~/RA-indexes/mail directory, made up of emails
+from my RMAIL file plus all files and subdirectories of ~/Rmail-files,
+excluding files and directories in ~/Rmail-files/Old-files.
+
+.B ra-index
+can build databases in any directory you like, but the emacs interface for
+the Remembrance Agent expects a particular structure.  For each database
+you want to make, you should create a directory, and all these directories
+should live in the same parent directory.  For example, for my own use I
+have a directory ~/RA-indexes/, and within that are the directories
+~/RA-indexes/mail/, ~/RA-indexes/papers/, etc. which actually contain the
+database files.
+
+.SS OPTIONS
+.TP
+.I -v
+Verbose mode.  Print useful information.
+.TP
+.I -d
+Debug mode.  Print not-so-useful information.
+.TP
+.I -e
+Exclude all filenames and directories which follow
+.TP
+.I -s
+Follow symbolic links when indexing
+.TP
+.I --version
+Print version information.
+
+.SH SEE ALSO
+ra-retrieve(1)
+.SH AUTHOR
+Bradley Rhodes, MIT Media Lab.  Please send comments and questions to
+ra-bugs@media.mit.edu.  New versions and updates can be found at
+http://www.media.mit.edu/~rhodes/RA/ 
+
+.SH COPYRIGHT
+All code included in versions up to and including 2.09:
+   Copyright (C) 2001 Massachusetts Institute of Technology.
+
+All modifications subsequent to version 2.09 are copyright Bradley
+Rhodes or their respective authors.
+
+Developed by Bradley Rhodes at the Media Laboratory, MIT, Cambridge,
+Massachusetts, with support from British Telecom and Merrill Lynch.
+
+This program is free software; you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation; either version 2 of the License, or (at
+your option) any later version.  For commercial licensing under other
+terms, please consult the MIT Technology Licensing Office.
+
+This program may be subject to the following US and/or foreign
+patents (pending): "Method and Apparatus for Automated,
+Context-Dependent Retrieval of Information," MIT Case No. 7870TS. If
+any of these patents are granted, royalty-free license to use this
+and derivative programs under the GNU General Public License are
+hereby granted.
+
+This program is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program; if not, write to the Free Software
+Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
+USA.
+
+.SH BUGS
+Dates are not currently indexed, so anything trying to do a date query gets
+no suggestion back.
+.PP
+Requires GNU make to compile.
+.PP
+The template structure isn't documented.

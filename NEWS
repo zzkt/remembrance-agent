@@ -1,0 +1,13 @@
+Current Version: 2.11
+See the file ChangeLog for the details of all changes
+
+Major changes from 2.10 to 2.11
+* Removed pcre from the source distribution, so it won't conflict if users
+  already have it installed. The minor downside is users now need to
+  install it.
+* ra-index now indexes words with more than one punctuation mark after them
+  (e.g. "doh!!!" or "really?!?" or "hmm...").
+* Added files that GNU automake wants to see, like ChangeLog, NEWS, INSTALL
+  and AUTHORS
+
+For major changes before 2.11, see ChangeLog

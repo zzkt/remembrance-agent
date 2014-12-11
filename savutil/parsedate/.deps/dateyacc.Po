@@ -1,0 +1,50 @@
+dateyacc.o: dateyacc.c ../../config.h /usr/include/stdio.h \
+  /usr/include/_types.h /usr/include/sys/_types.h \
+  /usr/include/sys/cdefs.h /usr/include/machine/_types.h \
+  /usr/include/i386/_types.h /usr/include/secure/_stdio.h \
+  /usr/include/secure/_common.h parsedate.h /usr/include/memory.h \
+  /usr/include/string.h /usr/include/secure/_string.h \
+  /usr/include/unistd.h /usr/include/sys/unistd.h \
+  /usr/include/sys/select.h /usr/include/sys/appleapiopts.h \
+  /usr/include/sys/_structs.h /usr/include/sys/_select.h \
+  /usr/lib/gcc/i686-apple-darwin10/4.2.1/include/stddef.h
+
+../../config.h:
+
+/usr/include/stdio.h:
+
+/usr/include/_types.h:
+
+/usr/include/sys/_types.h:
+
+/usr/include/sys/cdefs.h:
+
+/usr/include/machine/_types.h:
+
+/usr/include/i386/_types.h:
+
+/usr/include/secure/_stdio.h:
+
+/usr/include/secure/_common.h:
+
+parsedate.h:
+
+/usr/include/memory.h:
+
+/usr/include/string.h:
+
+/usr/include/secure/_string.h:
+
+/usr/include/unistd.h:
+
+/usr/include/sys/unistd.h:
+
+/usr/include/sys/select.h:
+
+/usr/include/sys/appleapiopts.h:
+
+/usr/include/sys/_structs.h:
+
+/usr/include/sys/_select.h:
+
+/usr/lib/gcc/i686-apple-darwin10/4.2.1/include/stddef.h:

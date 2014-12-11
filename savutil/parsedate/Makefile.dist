@@ -1,0 +1,45 @@
+# $Log: Makefile.dist,v $
+# Revision 1.1.1.1  2001/04/24 15:40:54  finagler
+# New CVS import, starting with 2.09 (introduction of the GPL)
+#
+# Revision 1.2  1999/03/25 02:32:28  event
+# This appears to be a working version of the date indexer.  Work still needs to be done on the retrieval end...
+#
+# Revision 1.1  84/09/01  15:00:58  wales
+# Initial revision
+# 
+# $Header: /local/CVSROOT/RA/savutil/parsedate/Makefile.dist,v 1.1.1.1 2001/04/24 15:40:54 finagler Exp $
+#
+# Makefile for "date" library routines
+#
+# Copyright (c) 1984 by Richard B. Wales
+
+DEFS   =
+CFLAGS = -O $(DEFS) -DRCSIDENT
+
+all:		libdate.a
+
+strip:		libdate.a
+
+libdate.a:	datelex.o dateyacc.o parsedate.o
+	rm -f libdate.a
+	ar rc libdate.a datelex.o dateyacc.o parsedate.o
+
+.c.o:
+	cc -S $(CFLAGS) $*.c
+	sed 's/_yy/_date_yy/g' $*.s | as -o $*.o
+	rm -f $*.s
+
+dateyacc.c dateyacc.h:	dateyacc.y
+	yacc -d dateyacc.y
+	mv y.tab.c dateyacc.c
+	mv y.tab.h dateyacc.h
+
+clean:
+	rm -f *.o *.s\
+	      dateyacc.c dateyacc.h y.tab.c y.tab.h y.output\
+	      libdate.a
+
+datelex.o:	parsedate.h dateyacc.h
+dateyacc.o:	parsedate.h
+parsedate.o:	parsedate.h

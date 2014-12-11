@@ -1,0 +1,160 @@
+Contents
+--------
+
+1.  Building the Remembrance Agent
+2.  Creating a database from a collection of text
+3.  Using the Remembrance Agent in Emacs
+
+1.  Building the Remembrance Agent
+----------------------------------
+
+The RA back-end has two executables, "ra-index" and "ra-retrieve", which
+together make the system called Savant.  Since you are reading this file, I
+assume you've already uncompressed and untarred the RA distribution.  To
+build Savant, cd to the RA directory type: 
+
+./configure; make
+
+This should analyze your system, and then make appropriate binaries of
+ra-index and ra-retrieve.  If you have trouble, make sure you are using the
+GNU version of make ("make --version" should produce something sensible).
+It might also be called "gmake" on your system.  Once the compilation is
+finished, the code you will need is:
+
+     main/ra-index:            Binary file for indexing documents
+     main/ra-retrieve:         Binary file for retrieving documents
+     other/remem.el:           Emacs interface to Savant
+
+Move ra-index and ra-retrieve to wherever you normally keep executables.
+Copy remem.el to wherever you keep emacs-lisp files.  If you don't have a
+place for elisp files, you can just create a directory called "elisp" off
+of your main directory and put them there.  You can then delete the source
+files if you like.
+
+
+2.  Creating a database from a collection of text
+-------------------------------------------------
+Savant has two executables, one which indexes documents into databases, and
+one which performs interactive retrievals from these databases.  To index,
+you must have a set of source text-files, and a directory Savant can put
+database files into.
+
+Usage:
+    ra-index [-v] [-d] [-s] <base-dir> <source1> [<source2>] ... 
+             [-e <excludee1> [<excludee2>] ...]
+
+The <source> arguments may be files or directories.  If a directory is in
+the list, Savant will use all its contents, recursing into all
+subdirectories.  Non-text files and backup files (those appended with ~ or
+prepended with #) are ignored.  It also ignores dot-files (those starting
+with .) and unless you specify the "-s" flag it will also ignore symbolic
+links.  Any files or directories specified after the optional -e flag will
+be excluded.  Savant will use any files it finds to create a database in
+the specified base directory, which must already exist.  The optional -v
+argument (verbose) will direct Savant to keep you updated on its progress.
+So for example, ra-index -v ~/RA-indexes/mail ~/RMAIL ~/Rmail-files -e
+~/Rmail-files/Old-files will build a database in the ~/RA-indexes/mail
+directory, made up of emails from my RMAIL file plus all files and
+subdirectories of ~/Rmail-files, excluding files and directories in
+~/Rmail-files/Old-files.  The optional -d flag turns on debugging
+information.
+
+***IMPORTANT***: Savant can build databases in any directory you like, but
+the emacs interface for the Remembrance Agent expects a particular
+structure.  For each database you want to make, you should create a
+directory, and all these directories should live in the same parent
+directory.  For example, for my own use I have a directory
+~/RA-indexes/, and within that are the directories ~/RA-indexes/mail/,
+~/RA-indexes/papers/, etc. which actually contain the database files.
+
+To see how Savant interacts with emacs while the remembrance agent is
+running, try running ra-retrieve with the command 'ra-retrieve -v <base-dir>'
+after creating a database using index.  You can use ra-retrieve as a simple
+search engine, but usually ra-retrieve is only called by the emacs
+front-end.
+
+3.  Using the Remembrance Agent in Emacs
+----------------------------------------
+You can load the Remembrance Agent automatically every time you run emacs
+by adding this line to your .emacs file in your homedir:
+
+        (load "remem.el")
+
+This assumes that you put remem.el into a directory that is in your emacs
+load-path.  To set that loadpath to include the directory ~/elisp/, you can
+use the line:
+
+        (setq load-path (append (list (expand-file-name "~/elisp")) load-path))
+
+Before the Remembrance Agent can be used, several variables must be
+configured.  These are listed at the top of remem.el, and are documented
+there as well.  You will either want to set these in your .emacs file or
+create a file called "remem-custom.el" and load that file after loading
+remem.el.  You probably don't want to set them in remem.el, unless you are
+the only person using this copy of the remembrance agent.
+
+        (setq remem-prog-dir <prog-dir-string>)
+        (setq remem-database-dir <database-dir-string>)
+        (setq remem-scopes-list <scope1, scope2, ...>)
+
+<prog-dir-string> should be the full name of the directory where you put
+the ra-retrieve executable, enclosed in double quotes.  This defaults to
+"/usr/local/bin".  On some systems, you need to make sure not to end the
+directory with a slash ("/").
+
+<remem-database-dir> should be the full name of the directory which holds
+your database directories, enclosed in double quotes.  Note that this is
+the name of a directory containing directories, not the directory
+containing the database files themselves.  This defaults to "~/RA-indexes".
+On some systems, you need to make sure not to end the directory with a
+slash ("/").
+
+
+remem-scopes-list: you can display several different "scopes," all with
+separate processes performing retrievals simultaneously.  Scopes can have
+different databases, update frequencies, and ranges of words it uses for a
+"query."  Each scope looks like this:
+    (DIRN NUM-LINES UPDATE-TIME QUERY-RANGE)
+
+     DIRN is the subdirectory of remem-database-dir with the desired database 
+             (This is the name of a sub-directory in remem-database-dir)
+     NUM-LINES is the number of lines that you want the scope to show (initially)
+     UPDATE-TIME is the time between scope updates (in seconds)
+     QUERY-RANGE number of words around your cursor that you want the scope to query on
+
+For example, my own customization shows this:
+    (setq remem-scopes-list '(("my-email" 6 5 500)
+                              ("my-notes" 2 10 500)))
+
+This sets up two scopes.  The first displays six suggestions from the index
+directory "/home/rhodes/RA-indexes/my-email/", updated every five seconds,
+based on the last 500 words around my cursor (where a word is considered 5
+characters, so that's really just the last 500 X 5 = 2500 characters).  The
+second scope displays two lines from "/home/rhodes/RA-indexes/my-email/",
+updated every ten seconds, also based on 2500 characters.
+
+The rest of the customizations set colors, logging, display of suggestions,
+display thresholds and the prefix for RA commands.  The default colors are
+set for a light background, but shift if you set hilit-background-mode to
+'dark.  They're all documented in remem.el -- play around with them.
+
+Okay!  After these customizations are made, you can start the
+Remembrance Agent by typing C-c r t.  It will create its window and
+after a moment or two begin to display suggestions like:
+
+1   + rhodes       RA presence paper stuff        04/14/97  papers           suggestions, ra
+2     tara         Questions digest for IA class  09/15/97  agents-class     remembrance, agent
+3  ++ rhodes       RA Projects Internal           03/09/99  ra-bugs-archive  window, display
+
+This can be summarized as 
+ <Line#>  <rating>  <author or file owner>  <subject>  <date>  <filename>  <keywords>
+
+The rating is a measure from zero to two plus signs (0 to 1 if you set
+remem-print-exact-relevance-p to t) and indicate how relevant the document
+is to a sample of your current buffer.  If you have
+remem-print-even-bad-relevance-p set to t then suggestions below the
+minimum threshold will print with a "-" sign, otherwise they'll show up as
+"No Sugestion." To see a suggested document, type C-c r <ID# of document>.
+The keywords are the top five keywords that contributed to making this
+suggestion, in order.
+

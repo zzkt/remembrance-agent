@@ -1,0 +1,8 @@
+This directory contains source to the parsedate library included in the
+'xjot' source code.  Some of the source files have been modified to eliminate
+warnings when compiling with 'gcc -Wall'.  In addition, dateyacc.y was modified
+to accept a few more variations on timezone specification.  The original source
+files have been included with the suffix '.orig'.
+
+Jan Nelson, cabbage@media.mit.edu
+1/19/97
